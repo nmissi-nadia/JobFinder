@@ -1,1 +1,13 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  @if (getUserProfile()) {
+    <div class="user-info">
+      <h1>Bienvenue {{ getUserProfile()!.prenom }} {{ getUserProfile()!.nom }}!</h1>
+      <p>Email: {{ getUserProfile()!.email }}</p>
+      <button (click)="logout()" class="btn-logout">Déconnexion</button>
+    </div>
+  } @else {
+    <div class="not-logged-in">
+      <p>Vous n'êtes pas connecté</p>
+    </div>
+  }
+</div>

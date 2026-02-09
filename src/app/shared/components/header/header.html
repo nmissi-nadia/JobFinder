@@ -1,1 +1,16 @@
-<p>header works!</p>
+<header class="header">
+  <div class="header-content">
+    <div class="logo">
+      <h1>Job Finder</h1>
+    </div>
+    <nav class="nav">
+      <a routerLink="/jobs" routerLinkActive="active">Offres</a>
+      @if (isLoggedIn()) {
+        <button (click)="logout()" class="btn-logout">Déconnexion</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active">Connexion</a>
+        <a routerLink="/register" routerLinkActive="active">Inscription</a>
+      }
+    </nav>
+  </div>
+</header>
