@@ -1,13 +1,21 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
+import { provideStore } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 import { routes } from './app.routes';
+import { favoritesReducer } from './state/favorites/favorites.reducer';
+import { FavoritesEffects } from './state/favorites/favorites.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient()
+    provideHttpClient(),
+    provideStore({ favorites: favoritesReducer }),
+    provideEffects([FavoritesEffects]),
+    provideStoreDevtools({ maxAge: 25, logOnly: false })
   ]
 };

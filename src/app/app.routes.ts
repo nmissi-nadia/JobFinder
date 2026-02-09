@@ -21,6 +21,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./features/jobs/job-detail/job-detail').then(m => m.JobDetailComponent)
   },
+  {
+    path: 'favorites',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/favorites/favorites.component').then(m => m.FavoritesComponent)
+  },
   // Routes Protégées
   {
     path: 'dashboard',

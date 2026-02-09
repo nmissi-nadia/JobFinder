@@ -3,8 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { signal, effect } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { JobService } from '../../../core/services/job.service';
 import { Job } from '../../../core/models/job.model';
+import { AuthService } from '../../../core/services/auth.service';
+import * as FavoritesActions from '../../../state/favorites/favorites.actions';
+import { selectAllFavorites } from '../../../state/favorites/favorites.selectors';
+import { Favorite } from '../../../core/services/favorites.service';
 
 @Component({
   selector: 'app-job-list',
@@ -14,11 +19,16 @@ import { Job } from '../../../core/models/job.model';
 })
 export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   private jobService = inject(JobService);
+  private authService = inject(AuthService);
+  private store = inject(Store);
 
   // Signals for state
   protected jobs = signal<Job[]>([]);
   protected isLoading = signal(false);
   protected error = signal<string | null>(null);
+
+  // Favorites State
+  protected favorites = this.store.selectSignal(selectAllFavorites);
 
   // Filters and Pagination
   protected keyword = signal('');
@@ -31,11 +41,10 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   private observer: IntersectionObserver | undefined;
 
   constructor() {
-    // Re-attach observer when jobs change (in case DOM was re-rendered)
+    // Re-attach observer when jobs change
     effect(() => {
       const jobsCount = this.jobs().length;
       if (jobsCount > 0) {
-        // Wait for DOM update
         setTimeout(() => this.setupIntersectionObserver(), 100);
       }
     });
@@ -43,6 +52,10 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadJobs();
+    const user = this.authService.getUserProfile();
+    if (user) {
+      this.store.dispatch(FavoritesActions.loadFavorites({ userId: user.id }));
+    }
   }
 
   ngAfterViewInit(): void {
@@ -61,8 +74,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setupIntersectionObserver(): void {
-    this.disconnectObserver(); // clean up old observer
-
+    this.disconnectObserver();
     if (!this.sentinel || !this.sentinel.nativeElement) return;
 
     this.observer = new IntersectionObserver((entries) => {
@@ -76,14 +88,11 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadJobs(append: boolean = false): void {
     this.isLoading.set(true);
-    if (!append) this.error.set(null); // Keep error if just appending? maybe separate error state for infinite scroll
+    if (!append) this.error.set(null);
 
-    // The Muse API uses page index starting at 0
     this.jobService.getJobs(this.currentPage(), this.location()).subscribe({
       next: (response) => {
         let newJobs = response.jobs;
-
-        // Client-side filtering for keywords (Title) as API doesn't support it directly
         if (this.keyword()) {
           newJobs = this.jobService.filterJobsByTitle(newJobs, this.keyword());
         }
@@ -118,10 +127,29 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  prevPage(): void {
-    if (this.currentPage() > 0) {
-      this.currentPage.update(p => p - 1);
-      this.loadJobs();
+  isFavorite(jobId: string): boolean {
+    return this.favorites().some(f => f.jobId === jobId);
+  }
+
+  toggleFavorite(job: Job): void {
+    const user = this.authService.getUserProfile();
+    if (!user) {
+      alert('Veuillez vous connecter pour ajouter des favoris.');
+      return;
+    }
+
+    const existingFavorite = this.favorites().find(f => f.jobId === job.id);
+    if (existingFavorite) {
+      this.store.dispatch(FavoritesActions.removeFavorite({ id: existingFavorite.id! }));
+    } else {
+      const favorite: Favorite = {
+        userId: user.id,
+        jobId: job.id,
+        jobTitle: job.title,
+        company: job.company,
+        location: job.location
+      };
+      this.store.dispatch(FavoritesActions.addFavorite({ favorite }));
     }
   }
 }

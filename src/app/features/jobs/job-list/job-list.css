@@ -151,8 +151,8 @@
 }
 
 .btn-detail,
-.btn-apply {
-  flex: 1;
+.btn-apply,
+.btn-favorite {
   padding: 0.75rem 1rem;
   text-align: center;
   text-decoration: none;
@@ -160,9 +160,13 @@
   font-weight: 600;
   font-size: 0.9rem;
   transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-detail {
+  flex: 1;
   background-color: transparent;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
@@ -174,7 +178,43 @@
   text-decoration: none;
 }
 
+.btn-favorite {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 42px;
+  /* Square-ish */
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-favorite svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  transition: all 0.2s;
+}
+
+.btn-favorite:hover {
+  background-color: var(--background-color);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-favorite.active {
+  background-color: #fef2f2;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-favorite.active svg {
+  fill: var(--primary-color);
+  stroke: var(--primary-color);
+}
+
 .btn-apply {
+  flex: 1;
   background-color: var(--primary-color);
   color: white;
   border: 1px solid var(--primary-color);
@@ -224,7 +264,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #007bff;
+  border-top: 4px solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

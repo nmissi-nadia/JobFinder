@@ -1,5 +1,13 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": "1770644427024",
+      "nom": "Praesentium maxime q",
+      "prenom": "Est occaecat dolore",
+      "email": "zygolosyhy@mailinator.com",
+      "password": "Pa$$w0rd!"
+    }
+  ],
   "favoritesOffers": [],
   "applications": []
 }

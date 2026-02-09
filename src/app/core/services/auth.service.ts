@@ -12,9 +12,9 @@ export class AuthService {
   private router = inject(Router);
 
   // URL vers le JSON Server
-  private apiUrl = 'http://localhost:3000/users';
+  private apiUrl = 'http://localhost:3004/users';
 
-  constructor() {}
+  constructor() { }
 
   // 1. Inscription
   register(user: User): Observable<User> {

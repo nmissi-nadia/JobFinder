@@ -2,10 +2,10 @@
 
 /* Global Styles & Variables */
 :root {
-    --primary-color: #3b82f6;
-    /* Blue 500 */
-    --primary-hover: #2563eb;
-    /* Blue 600 */
+    --primary-color: #ef4444;
+    /* Red 500 */
+    --primary-hover: #dc2626;
+    /* Red 600 */
     --secondary-color: #64748b;
     /* Slate 500 */
     --background-color: #f8fafc;

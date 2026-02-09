@@ -1,0 +1,38 @@
+<div class="favorites-container">
+    <h1>Mes Favoris</h1>
+
+    @if (error$ | async; as error) {
+    <div class="error-message">{{ error }}</div>
+    }
+
+    @if (isLoading$ | async) {
+    <div class="loading">Chargement des favoris...</div>
+    } @else {
+    @if ((favorites$ | async)?.length === 0) {
+    <div class="no-favorites">
+        <p>Vous n'avez aucune offre favorite pour le moment.</p>
+        <a routerLink="/jobs" class="btn-browse">Parcourir les offres</a>
+    </div>
+    } @else {
+    <div class="jobs-grid">
+        @for (favorite of favorites$ | async; track favorite.id) {
+        <div class="job-card">
+            <div class="job-header">
+                <h2>{{ favorite.jobTitle }}</h2>
+                <p class="company">{{ favorite.company }}</p>
+            </div>
+            <div class="job-body">
+                <p><strong>Localisation:</strong> {{ favorite.location }}</p>
+            </div>
+            <div class="job-footer">
+                <a [routerLink]="['/jobs', favorite.jobId]" class="btn-detail">Voir détails</a>
+                <button (click)="removeFavorite(favorite.id!)" class="btn-remove">
+                    Retirer
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+    }
+</div>
