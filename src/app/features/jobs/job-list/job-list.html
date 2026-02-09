@@ -1,6 +1,21 @@
 <div class="job-list-container">
   <h1>Offres d'emploi</h1>
 
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input 
+      [(ngModel)]="keyword" 
+      placeholder="Mots clés (titre)..." 
+      (keyup.enter)="onSearch()"
+    />
+    <input 
+      [(ngModel)]="location" 
+      placeholder="Localisation (ex: New York)..." 
+      (keyup.enter)="onSearch()"
+    />
+    <button (click)="onSearch()">Rechercher</button>
+  </div>
+
   @if (error()) {
     <div class="error-message">{{ error() }}</div>
   }
@@ -9,7 +24,7 @@
     <div class="loading">Chargement des offres...</div>
   } @else {
     @if (jobs().length === 0) {
-      <div class="no-jobs">Aucune offre d'emploi trouvée</div>
+      <div class="no-jobs">Aucune offre d'emploi trouvée pour ces critères.</div>
     } @else {
       <div class="jobs-grid">
         @for (job of jobs(); track job.id) {
@@ -23,8 +38,8 @@
               @if (job.salary) {
                 <p><strong>Salaire:</strong> {{ job.salary }}</p>
               }
-              <p><strong>Posté le:</strong> {{ job.datePosted }}</p>
-              <p class="description">{{ job.description }}</p>
+              <p><strong>Posté le:</strong> {{ job.datePosted | date:'mediumDate' }}</p>
+              <div class="description" [innerHTML]="job.description.length > 150 ? (job.description | slice:0:150) + '...' : job.description"></div>
             </div>
             <div class="job-footer">
               <a [routerLink]="['/jobs', job.id]" class="btn-detail"
@@ -36,6 +51,13 @@
             </div>
           </div>
         }
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button (click)="prevPage()" [disabled]="currentPage() === 0">Précédent</button>
+        <span>Page {{ currentPage() + 1 }} / {{ pageCount() }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage() >= pageCount() - 1">Suivant</button>
       </div>
     }
   }

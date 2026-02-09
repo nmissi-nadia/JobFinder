@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
-import { User } from '../models/user.model'; // Assure-toi que ce chemin est correct
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +38,6 @@ export class AuthService {
 
   // 3. Gestion de session (LocalStorage)
   private setSession(user: User): void {
-    // On retire le mot de passe avant de stocker
     const { password, ...userWithoutPassword } = user;
     localStorage.setItem('userToken', JSON.stringify(userWithoutPassword));
   }
