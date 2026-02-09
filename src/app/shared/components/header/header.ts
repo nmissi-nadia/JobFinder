@@ -11,12 +11,22 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class HeaderComponent {
   private authService = inject(AuthService);
+  isMobileMenuOpen = false;
 
   logout(): void {
     this.authService.logout();
+    this.closeMenu();
   }
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
+  }
+
+  toggleMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMenu(): void {
+    this.isMobileMenuOpen = false;
   }
 }

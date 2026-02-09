@@ -5,9 +5,18 @@
       "nom": "Praesentium maxime q",
       "prenom": "Est occaecat dolore",
       "email": "zygolosyhy@mailinator.com",
-      "password": "Pa$$w0rd!"
+        "password": "Pa$$w0rd!"
     }
   ],
-  "favoritesOffers": [],
+  "favoritesOffers": [
+    {
+      "userId": "1770644427024",
+      "jobId": "18113098",
+      "jobTitle": "LPN - Inpatient",
+      "company": "Methodist Le Bonheur Healthcare",
+      "location": "Hernando, MS",
+      "id": 1
+    }
+  ],
   "applications": []
 }

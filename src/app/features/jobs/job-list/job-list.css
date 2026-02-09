@@ -127,6 +127,7 @@
   font-weight: 600;
 }
 
+/* Description Truncation */
 .job-body .description {
   margin-top: 1.25rem;
   padding-top: 1.25rem;
@@ -141,6 +142,8 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-height: 4.5em;
+  /* Fallback */
 }
 
 .job-footer {
@@ -250,7 +253,6 @@
   }
 }
 
-
 /* Infinite Scroll Sentinel */
 .sentinel {
   height: 20px;
@@ -277,16 +279,4 @@
   100% {
     transform: rotate(360deg);
   }
-}
-
-/* Description Truncation */
-.job-body .description {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 4.5em;
-  /* Fallback */
 }
