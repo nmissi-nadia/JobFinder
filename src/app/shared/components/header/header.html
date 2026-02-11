@@ -27,6 +27,8 @@
     <!-- Desktop Actions -->
     <div class="hidden md:flex md:items-center md:gap-x-4">
       @if (isLoggedIn()) {
+      <a routerLink="/profile" routerLinkActive="text-red-600"
+        class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600 transition-colors">Profil</a>
       <button (click)="logout()"
         class="rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 shadow-sm hover:bg-red-100 transition-colors">
         Déconnexion
@@ -70,6 +72,8 @@
       @if (isLoggedIn()) {
       <a routerLink="/favorites" (click)="closeMenu()" routerLinkActive="bg-gray-50 text-red-600"
         class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50 hover:text-red-600">Favoris</a>
+      <a routerLink="/profile" (click)="closeMenu()" routerLinkActive="bg-gray-50 text-red-600"
+        class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50 hover:text-red-600">Profil</a>
       <button (click)="logout()"
         class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-red-600 hover:bg-red-50">Déconnexion</button>
       } @else {
