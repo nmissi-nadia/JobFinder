@@ -45,6 +45,10 @@
             </polygon>
           </svg>
         </button>
+        <button (click)="trackApplication(job)" class="btn-track" [class.tracked]="isTracked(job.id)"
+          [disabled]="isTracked(job.id)" title="Suivre cette candidature">
+          📋 {{ isTracked(job.id) ? 'Déjà suivie' : 'Suivre' }}
+        </button>
         <a [href]="job.url" target="_blank" class="btn-apply">Postuler</a>
       </div>
     </div>

@@ -10,6 +10,9 @@ import { AuthService } from '../../../core/services/auth.service';
 import * as FavoritesActions from '../../../state/favorites/favorites.actions';
 import { selectAllFavorites } from '../../../state/favorites/favorites.selectors';
 import { Favorite } from '../../../core/services/favorites.service';
+import * as ApplicationsActions from '../../../state/applications/applications.actions';
+import { selectAllApplications } from '../../../state/applications/applications.selectors';
+import { Application } from '../../../core/models/application.model';
 
 @Component({
   selector: 'app-job-list',
@@ -29,6 +32,9 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Favorites State
   protected favorites = this.store.selectSignal(selectAllFavorites);
+
+  // Applications State
+  protected applications = this.store.selectSignal(selectAllApplications);
 
   // Filters and Pagination
   protected keyword = signal('');
@@ -55,6 +61,7 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
     const user = this.authService.getUserProfile();
     if (user) {
       this.store.dispatch(FavoritesActions.loadFavorites({ userId: user.id }));
+      this.store.dispatch(ApplicationsActions.loadApplications({ userId: user.id }));
     }
   }
 
@@ -151,5 +158,35 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
       };
       this.store.dispatch(FavoritesActions.addFavorite({ favorite }));
     }
+  }
+
+  isTracked(jobId: string): boolean {
+    return this.applications().some(app => app.jobId === jobId);
+  }
+
+  trackApplication(job: Job): void {
+    const user = this.authService.getUserProfile();
+    if (!user) {
+      alert('Veuillez vous connecter pour suivre des candidatures.');
+      return;
+    }
+
+    if (this.isTracked(job.id)) {
+      alert('Cette offre est déjà suivie dans vos candidatures.');
+      return;
+    }
+
+    const application: Application = {
+      userId: user.id,
+      jobId: job.id,
+      apiSource: 'themuse',
+      title: job.title,
+      company: job.company,
+      location: job.location,
+      url: job.url,
+      status: 'en_attente',
+      dateAdded: new Date().toISOString()
+    };
+    this.store.dispatch(ApplicationsActions.addApplication({ application }));
   }
 }
