@@ -114,3 +114,37 @@
 .register-link a:hover {
   text-decoration: underline;
 }
+
+/* Validation Styles */
+.required {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.form-group input.invalid {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.form-group input.invalid:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.field-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-card {
+    padding: 1.5rem;
+  }
+}

@@ -1,70 +1,60 @@
 <div class="register-container">
   <div class="register-card">
     <h1>Inscription</h1>
-    
+
     @if (error()) {
-      <div class="error-message">{{ error() }}</div>
+    <div class="error-message">{{ error() }}</div>
     }
 
-    <form (ngSubmit)="register()" class="register-form">
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="register-form">
       <div class="form-group">
-        <label for="nom">Nom:</label>
-        <input
-          type="text"
-          id="nom"
-          [(ngModel)]="nom"
-          name="nom"
-          required
-          placeholder="Entrez votre nom"
-        />
+        <label for="nom">Nom: <span class="required">*</span></label>
+        <input type="text" id="nom" formControlName="nom" placeholder="Entrez votre nom"
+          [class.invalid]="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched" />
+        @if (getErrorMessage('nom')) {
+        <span class="field-error">{{ getErrorMessage('nom') }}</span>
+        }
       </div>
 
       <div class="form-group">
-        <label for="prenom">Prénom:</label>
-        <input
-          type="text"
-          id="prenom"
-          [(ngModel)]="prenom"
-          name="prenom"
-          required
-          placeholder="Entrez votre prénom"
-        />
+        <label for="prenom">Prénom: <span class="required">*</span></label>
+        <input type="text" id="prenom" formControlName="prenom" placeholder="Entrez votre prénom"
+          [class.invalid]="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched" />
+        @if (getErrorMessage('prenom')) {
+        <span class="field-error">{{ getErrorMessage('prenom') }}</span>
+        }
       </div>
 
       <div class="form-group">
-        <label for="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          [(ngModel)]="email"
-          name="email"
-          required
-          placeholder="Entrez votre email"
-        />
+        <label for="email">Email: <span class="required">*</span></label>
+        <input type="email" id="email" formControlName="email" placeholder="exemple@email.com"
+          [class.invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" />
+        @if (getErrorMessage('email')) {
+        <span class="field-error">{{ getErrorMessage('email') }}</span>
+        }
       </div>
 
       <div class="form-group">
-        <label for="password">Mot de passe:</label>
-        <input
-          type="password"
-          id="password"
-          [(ngModel)]="password"
-          name="password"
-          required
-          placeholder="Entrez votre mot de passe"
-        />
+        <label for="password">Mot de passe: <span class="required">*</span></label>
+        <input type="password" id="password" formControlName="password" placeholder="Min. 8 caractères"
+          [class.invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" />
+        @if (getErrorMessage('password')) {
+        <span class="field-error">{{ getErrorMessage('password') }}</span>
+        }
+        <small class="password-hint">
+          Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère
+          spécial (@$!%*?&)
+        </small>
       </div>
 
       <div class="form-group">
-        <label for="passwordConfirm">Confirmer le mot de passe:</label>
-        <input
-          type="password"
-          id="passwordConfirm"
-          [(ngModel)]="passwordConfirm"
-          name="passwordConfirm"
-          required
+        <label for="passwordConfirm">Confirmer le mot de passe: <span class="required">*</span></label>
+        <input type="password" id="passwordConfirm" formControlName="passwordConfirm"
           placeholder="Confirmez votre mot de passe"
-        />
+          [class.invalid]="registerForm.get('passwordConfirm')?.invalid && registerForm.get('passwordConfirm')?.touched" />
+        @if (getErrorMessage('passwordConfirm')) {
+        <span class="field-error">{{ getErrorMessage('passwordConfirm') }}</span>
+        }
       </div>
 
       <button type="submit" [disabled]="isLoading()">
