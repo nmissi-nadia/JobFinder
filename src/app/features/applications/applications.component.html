@@ -1,0 +1,111 @@
+<div class="applications-container">
+    <h1>Mes Candidatures</h1>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button (click)="setFilter('all')" [class.active]="filterStatus() === 'all'" class="filter-tab">
+            Toutes ({{ getApplicationsCount('all') }})
+        </button>
+        <button (click)="setFilter('en_attente')" [class.active]="filterStatus() === 'en_attente'" class="filter-tab">
+            En attente ({{ getApplicationsCount('en_attente') }})
+        </button>
+        <button (click)="setFilter('accepte')" [class.active]="filterStatus() === 'accepte'" class="filter-tab">
+            Acceptées ({{ getApplicationsCount('accepte') }})
+        </button>
+        <button (click)="setFilter('refuse')" [class.active]="filterStatus() === 'refuse'" class="filter-tab">
+            Refusées ({{ getApplicationsCount('refuse') }})
+        </button>
+    </div>
+
+    @if (error()) {
+    <div class="error-message">{{ error() }}</div>
+    }
+
+    @if (isLoading()) {
+    <div class="loading">Chargement des candidatures...</div>
+    } @else {
+    @if (filteredApplications.length === 0) {
+    <div class="no-applications">
+        <p>Aucune candidature trouvée.</p>
+        <p class="hint">Commencez à suivre des offres d'emploi pour les retrouver ici !</p>
+    </div>
+    } @else {
+    <div class="applications-list">
+        @for (application of filteredApplications; track application.id) {
+        <div class="application-card">
+            <div class="application-header">
+                <div>
+                    <h2>{{ application.title }}</h2>
+                    <p class="company">{{ application.company }}</p>
+                    <p class="location">📍 {{ application.location }}</p>
+                </div>
+                <div class="status-badge" [ngClass]="getStatusClass(application.status)">
+                    {{ getStatusLabel(application.status) }}
+                </div>
+            </div>
+
+            <div class="application-body">
+                <p class="date-added">
+                    <strong>Ajoutée le:</strong> {{ application.dateAdded | date:'medium' }}
+                </p>
+
+                <!-- Status Update -->
+                <div class="status-update">
+                    <label>Changer le statut:</label>
+                    <div class="status-buttons">
+                        <button (click)="updateStatus(application, 'en_attente')"
+                            [disabled]="application.status === 'en_attente'" class="btn-status btn-pending">
+                            ⏳ En attente
+                        </button>
+                        <button (click)="updateStatus(application, 'accepte')"
+                            [disabled]="application.status === 'accepte'" class="btn-status btn-accepted">
+                            ✅ Accepté
+                        </button>
+                        <button (click)="updateStatus(application, 'refuse')"
+                            [disabled]="application.status === 'refuse'" class="btn-status btn-refused">
+                            ❌ Refusé
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notes Section -->
+                <div class="notes-section">
+                    <label>Notes personnelles:</label>
+                    @if (editingNotes()[application.id!]) {
+                    <div class="notes-edit">
+                        <textarea [(ngModel)]="notesInput()[application.id!]" placeholder="Ajoutez vos notes ici..."
+                            rows="3"></textarea>
+                        <div class="notes-actions">
+                            <button (click)="saveNotes(application)" class="btn-save">💾 Sauvegarder</button>
+                            <button (click)="cancelEditingNotes(application.id!)" class="btn-cancel">Annuler</button>
+                        </div>
+                    </div>
+                    } @else {
+                    <div class="notes-display">
+                        @if (application.notes) {
+                        <p class="notes-text">{{ application.notes }}</p>
+                        } @else {
+                        <p class="notes-empty">Aucune note pour le moment.</p>
+                        }
+                        <button (click)="startEditingNotes(application.id!, application.notes)" class="btn-edit-notes">
+                            ✏️ {{ application.notes ? 'Modifier' : 'Ajouter' }} les notes
+                        </button>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <div class="application-footer">
+                <a [href]="application.url" target="_blank" class="btn-view-offer">
+                    🔗 Voir l'offre
+                </a>
+                <button (click)="deleteApplication(application.id!)" class="btn-delete">
+                    🗑️ Supprimer
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+    }
+</div>
