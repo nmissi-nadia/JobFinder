@@ -9,6 +9,9 @@ import { AuthService } from '../../../core/services/auth.service';
 import * as FavoritesActions from '../../../state/favorites/favorites.actions';
 import { selectAllFavorites } from '../../../state/favorites/favorites.selectors';
 import { Favorite } from '../../../core/services/favorites.service';
+import * as ApplicationsActions from '../../../state/applications/applications.actions';
+import { selectAllApplications } from '../../../state/applications/applications.selectors';
+import { Application } from '../../../core/models/application.model';
 
 @Component({
   selector: 'app-job-detail',
@@ -27,6 +30,7 @@ export class JobDetailComponent implements OnInit {
   protected error = signal<string | null>(null);
 
   protected favorites = this.store.selectSignal(selectAllFavorites);
+  protected applications = this.store.selectSignal(selectAllApplications);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -36,6 +40,7 @@ export class JobDetailComponent implements OnInit {
     const user = this.authService.getUserProfile();
     if (user) {
       this.store.dispatch(FavoritesActions.loadFavorites({ userId: user.id }));
+      this.store.dispatch(ApplicationsActions.loadApplications({ userId: user.id }));
     }
   }
 
@@ -83,5 +88,40 @@ export class JobDetailComponent implements OnInit {
       };
       this.store.dispatch(FavoritesActions.addFavorite({ favorite }));
     }
+  }
+
+  isTracked(): boolean {
+    const currentJob = this.job();
+    if (!currentJob) return false;
+    return this.applications().some(app => app.jobId === currentJob.id);
+  }
+
+  trackApplication(): void {
+    const user = this.authService.getUserProfile();
+    if (!user) {
+      alert('Veuillez vous connecter pour suivre des candidatures.');
+      return;
+    }
+
+    const currentJob = this.job();
+    if (!currentJob) return;
+
+    if (this.isTracked()) {
+      alert('Cette offre est déjà suivie dans vos candidatures.');
+      return;
+    }
+
+    const application: Application = {
+      userId: user.id,
+      jobId: currentJob.id,
+      apiSource: 'themuse',
+      title: currentJob.title,
+      company: currentJob.company,
+      location: currentJob.location,
+      url: currentJob.url,
+      status: 'en_attente',
+      dateAdded: new Date().toISOString()
+    };
+    this.store.dispatch(ApplicationsActions.addApplication({ application }));
   }
 }

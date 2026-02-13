@@ -12,6 +12,12 @@
     <div class="job-header">
       <h1>{{ job()!.title }}</h1>
       <p class="company">{{ job()!.company }}</p>
+      @if (isFavorite()) {
+      <span class="badge badge-favorite">⭐ Dans vos favoris</span>
+      }
+      @if (isTracked()) {
+      <span class="badge badge-tracked">📋 Candidature suivie</span>
+      }
     </div>
 
     <div class="job-info">
@@ -42,6 +48,11 @@
             points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
           </polygon>
         </svg>
+        {{ isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+      </button>
+      <button (click)="trackApplication()" class="btn-track" [class.tracked]="isTracked()" [disabled]="isTracked()"
+        title="Suivre cette candidature">
+        📋 {{ isTracked() ? 'Déjà suivie' : 'Suivre cette candidature' }}
       </button>
     </div>
   </div>
