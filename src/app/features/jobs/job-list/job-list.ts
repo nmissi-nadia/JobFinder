@@ -1,8 +1,7 @@
-import { Component, OnInit, inject, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { signal, effect } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { JobService } from '../../../core/services/job.service';
 import { Job } from '../../../core/models/job.model';
@@ -16,45 +15,27 @@ import { Application } from '../../../core/models/application.model';
 
 @Component({
   selector: 'app-job-list',
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './job-list.html',
   styleUrl: './job-list.css',
 })
-export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class JobListComponent implements OnInit, AfterViewInit {
   private jobService = inject(JobService);
-  private authService = inject(AuthService);
   private store = inject(Store);
+  private authService = inject(AuthService);
 
-  // Signals for state
+  @ViewChild('sentinel') sentinel!: ElementRef;
+
   protected jobs = signal<Job[]>([]);
   protected isLoading = signal(false);
   protected error = signal<string | null>(null);
+  protected keyword = '';
+  protected location = '';
+  protected page = 1;
+  protected hasMore = true;
 
-  // Favorites State
   protected favorites = this.store.selectSignal(selectAllFavorites);
-
-  // Applications State
   protected applications = this.store.selectSignal(selectAllApplications);
-
-  // Filters and Pagination
-  protected keyword = signal('');
-  protected location = signal('');
-  protected currentPage = signal(0);
-  protected pageCount = signal(0);
-
-  // Infinite Scroll
-  @ViewChild('sentinel') sentinel!: ElementRef;
-  private observer: IntersectionObserver | undefined;
-
-  constructor() {
-    // Re-attach observer when jobs change
-    effect(() => {
-      const jobsCount = this.jobs().length;
-      if (jobsCount > 0) {
-        setTimeout(() => this.setupIntersectionObserver(), 100);
-      }
-    });
-  }
 
   ngOnInit(): void {
     this.loadJobs();
@@ -66,71 +47,51 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.setupIntersectionObserver();
+    this.setupInfiniteScroll();
   }
 
-  ngOnDestroy(): void {
-    this.disconnectObserver();
-  }
+  loadJobs(): void {
+    if (this.isLoading() || !this.hasMore) return;
 
-  disconnectObserver(): void {
-    if (this.observer) {
-      this.observer.disconnect();
-      this.observer = undefined;
-    }
-  }
-
-  setupIntersectionObserver(): void {
-    this.disconnectObserver();
-    if (!this.sentinel || !this.sentinel.nativeElement) return;
-
-    this.observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !this.isLoading() && this.jobs().length > 0 && this.currentPage() < this.pageCount() - 1) {
-        this.nextPage();
-      }
-    }, { threshold: 0.1 });
-
-    this.observer.observe(this.sentinel.nativeElement);
-  }
-
-  loadJobs(append: boolean = false): void {
     this.isLoading.set(true);
-    if (!append) this.error.set(null);
+    this.error.set(null);
 
-    this.jobService.getJobs(this.currentPage(), this.location()).subscribe({
-      next: (response) => {
-        let newJobs = response.jobs;
-        if (this.keyword()) {
-          newJobs = this.jobService.filterJobsByTitle(newJobs, this.keyword());
-        }
-
-        if (append) {
-          this.jobs.update(currentJobs => [...currentJobs, ...newJobs]);
+    this.jobService.getJobs(this.page, this.keyword, this.location).subscribe({
+      next: (newJobs) => {
+        if (newJobs.length === 0) {
+          this.hasMore = false;
         } else {
-          this.jobs.set(newJobs);
+          this.jobs.update(current => [...current, ...newJobs]);
+          this.page++;
         }
-
-        this.pageCount.set(response.pageCount);
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Error loading jobs', err);
-        if (!append) this.error.set('Erreur lors du chargement des emplois.');
+        this.error.set('Erreur lors du chargement des offres');
         this.isLoading.set(false);
       },
     });
   }
 
   onSearch(): void {
-    this.currentPage.set(0);
     this.jobs.set([]);
-    this.loadJobs(false);
+    this.page = 1;
+    this.hasMore = true;
+    this.loadJobs();
   }
 
-  nextPage(): void {
-    if (this.currentPage() < this.pageCount() - 1) {
-      this.currentPage.update(p => p + 1);
-      this.loadJobs(true);
+  setupInfiniteScroll(): void {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !this.isLoading() && this.hasMore) {
+          this.loadJobs();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (this.sentinel) {
+      observer.observe(this.sentinel.nativeElement);
     }
   }
 
@@ -188,5 +149,32 @@ export class JobListComponent implements OnInit, AfterViewInit, OnDestroy {
       dateAdded: new Date().toISOString()
     };
     this.store.dispatch(ApplicationsActions.addApplication({ application }));
+  }
+
+  applyToJob(job: Job): void {
+    const user = this.authService.getUserProfile();
+    if (!user) {
+      alert('Veuillez vous connecter pour postuler.');
+      return;
+    }
+
+    // Automatically track the application if not already tracked
+    if (!this.isTracked(job.id)) {
+      const application: Application = {
+        userId: user.id,
+        jobId: job.id,
+        apiSource: 'themuse',
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        url: job.url,
+        status: 'en_attente',
+        dateAdded: new Date().toISOString()
+      };
+      this.store.dispatch(ApplicationsActions.addApplication({ application }));
+    }
+
+    // Open the job URL in a new tab
+    window.open(job.url, '_blank');
   }
 }

@@ -221,6 +221,8 @@
   background-color: var(--primary-color);
   color: white;
   border: 1px solid var(--primary-color);
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .btn-apply:hover {
@@ -228,6 +230,7 @@
   text-decoration: none;
   box-shadow: var(--shadow-md);
 }
+
 
 .btn-track {
   flex: 1;

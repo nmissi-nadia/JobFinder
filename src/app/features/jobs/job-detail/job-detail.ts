@@ -124,4 +124,34 @@ export class JobDetailComponent implements OnInit {
     };
     this.store.dispatch(ApplicationsActions.addApplication({ application }));
   }
+
+  applyToJob(): void {
+    const user = this.authService.getUserProfile();
+    if (!user) {
+      alert('Veuillez vous connecter pour postuler.');
+      return;
+    }
+
+    const currentJob = this.job();
+    if (!currentJob) return;
+
+    // Automatically track the application if not already tracked
+    if (!this.isTracked()) {
+      const application: Application = {
+        userId: user.id,
+        jobId: currentJob.id,
+        apiSource: 'themuse',
+        title: currentJob.title,
+        company: currentJob.company,
+        location: currentJob.location,
+        url: currentJob.url,
+        status: 'en_attente',
+        dateAdded: new Date().toISOString()
+      };
+      this.store.dispatch(ApplicationsActions.addApplication({ application }));
+    }
+
+    // Open the job URL in a new tab
+    window.open(currentJob.url, '_blank');
+  }
 }

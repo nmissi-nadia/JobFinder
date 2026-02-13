@@ -49,7 +49,7 @@
           [disabled]="isTracked(job.id)" title="Suivre cette candidature">
           📋 {{ isTracked(job.id) ? 'Déjà suivie' : 'Suivre' }}
         </button>
-        <a [href]="job.url" target="_blank" class="btn-apply">Postuler</a>
+        <button (click)="applyToJob(job)" class="btn-apply">Postuler</button>
       </div>
     </div>
     }

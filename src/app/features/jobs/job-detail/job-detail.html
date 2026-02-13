@@ -1,46 +1,39 @@
 <div class="job-detail-container">
-  <a routerLink="/jobs" class="btn-back">← Retour aux offres</a>
+  <button routerLink="/jobs" class="back-button">← Retour aux offres</button>
 
   @if (error()) {
   <div class="error-message">{{ error() }}</div>
   }
 
   @if (isLoading()) {
-  <div class="loading">Chargement de l'offre...</div>
-  } @else if (job()) {
-  <div class="job-detail">
+  <div class="loading">Chargement...</div>
+  } @else if (job(); as currentJob) {
+  <div class="job-detail-card">
     <div class="job-header">
-      <h1>{{ job()!.title }}</h1>
-      <p class="company">{{ job()!.company }}</p>
-      @if (isFavorite()) {
-      <span class="badge badge-favorite">⭐ Dans vos favoris</span>
-      }
-      @if (isTracked()) {
-      <span class="badge badge-tracked">📋 Candidature suivie</span>
-      }
-    </div>
-
-    <div class="job-info">
-      <div class="info-item">
-        <strong>Localisation:</strong> {{ job()!.location }}
+      <div class="badges">
+        @if (isFavorite()) {
+        <span class="badge badge-favorite">⭐ Dans vos favoris</span>
+        }
+        @if (isTracked()) {
+        <span class="badge badge-tracked">📋 Candidature suivie</span>
+        }
       </div>
-      @if (job()!.salary) {
-      <div class="info-item">
-        <strong>Salaire:</strong> {{ job()!.salary }}
-      </div>
+      <h1>{{ currentJob.title }}</h1>
+      <p class="company">{{ currentJob.company }}</p>
+      <p class="location">📍 {{ currentJob.location }}</p>
+      @if (currentJob.salary) {
+      <p class="salary">💰 {{ currentJob.salary }}</p>
       }
-      <div class="info-item">
-        <strong>Posté le:</strong> {{ job()!.datePosted | date:'mediumDate' }}
-      </div>
+      <p class="date-posted">Publié le {{ currentJob.datePosted | date:'longDate' }}</p>
     </div>
 
     <div class="job-description">
       <h2>Description du poste</h2>
-      <div [innerHTML]="job()!.description"></div>
+      <div [innerHTML]="currentJob.description"></div>
     </div>
 
     <div class="job-actions">
-      <a [href]="job()!.url" target="_blank" class="btn-apply">Postuler maintenant</a>
+      <button (click)="applyToJob()" class="btn-apply">Postuler maintenant</button>
       <button (click)="toggleFavorite()" class="btn-favorite" [class.active]="isFavorite()" title="Ajouter aux favoris">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
@@ -48,7 +41,6 @@
             points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
           </polygon>
         </svg>
-        {{ isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
       </button>
       <button (click)="trackApplication()" class="btn-track" [class.tracked]="isTracked()" [disabled]="isTracked()"
         title="Suivre cette candidature">
@@ -56,7 +48,5 @@
       </button>
     </div>
   </div>
-  } @else {
-  <div class="no-job">Offre d'emploi non trouvée</div>
   }
 </div>
