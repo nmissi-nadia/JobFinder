@@ -19,7 +19,7 @@
   <div class="no-jobs">Aucune offre d'emploi trouvée pour ces critères.</div>
   } @else {
   <div class="jobs-grid">
-    @for (job of jobs(); track job.id) {
+    @for (job of jobs(); track trackByJobId($index, job)) {
     <div class="job-card">
       <div class="job-header">
         <h2>{{ job.title }}</h2>
@@ -45,11 +45,11 @@
             </polygon>
           </svg>
         </button>
-        <button (click)="trackApplication(job)" class="btn-track" [class.tracked]="isTracked(job.id)"
-          [disabled]="isTracked(job.id)" title="Suivre cette candidature">
-          📋 {{ isTracked(job.id) ? 'Déjà suivie' : 'Suivre' }}
-        </button>
+        @if (isTracked(job.id)) {
+        <span class="badge-tracked">📋 Candidature suivie</span>
+        } @else {
         <button (click)="applyToJob(job)" class="btn-apply">Postuler</button>
+        }
       </div>
     </div>
     }

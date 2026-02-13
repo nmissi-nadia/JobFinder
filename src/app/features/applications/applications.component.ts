@@ -1,6 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { StatusLabelPipe } from '../../shared/pipes/status-label.pipe';
+import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { Store } from '@ngrx/store';
 import { Application } from '../../core/models/application.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -14,7 +16,7 @@ import {
 
 @Component({
     selector: 'app-applications',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, StatusLabelPipe, TimeAgoPipe],
     templateUrl: './applications.component.html',
     styleUrl: './applications.component.css',
 })

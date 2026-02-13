@@ -31,7 +31,7 @@
     </div>
     } @else {
     <div class="applications-list">
-        @for (application of filteredApplications; track application.id) {
+        @for (application of filteredApplications; track trackByApplicationId($index, application)) {
         <div class="application-card">
             <div class="application-header">
                 <div>
@@ -40,13 +40,13 @@
                     <p class="location">📍 {{ application.location }}</p>
                 </div>
                 <div class="status-badge" [ngClass]="getStatusClass(application.status)">
-                    {{ getStatusLabel(application.status) }}
+                    {{ application.status | statusLabel }}
                 </div>
             </div>
 
             <div class="application-body">
                 <p class="date-added">
-                    <strong>Ajoutée le:</strong> {{ application.dateAdded | date:'medium' }}
+                    <strong>Ajoutee le:</strong> {{ application.dateAdded | timeAgo }}
                 </p>
 
                 <!-- Status Update -->

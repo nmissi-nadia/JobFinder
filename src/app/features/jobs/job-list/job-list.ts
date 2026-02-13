@@ -31,7 +31,7 @@ export class JobListComponent implements OnInit, AfterViewInit {
   protected error = signal<string | null>(null);
   protected keyword = '';
   protected location = '';
-  protected page = 1;
+  protected page = 0;
   protected hasMore = true;
 
   protected favorites = this.store.selectSignal(selectAllFavorites);
@@ -56,8 +56,9 @@ export class JobListComponent implements OnInit, AfterViewInit {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.jobService.getJobs(this.page, this.keyword, this.location).subscribe({
-      next: (newJobs) => {
+    this.jobService.getJobs(this.page, this.location, this.keyword).subscribe({
+      next: (response) => {
+        const newJobs = response.jobs;
         if (newJobs.length === 0) {
           this.hasMore = false;
         } else {
@@ -75,7 +76,7 @@ export class JobListComponent implements OnInit, AfterViewInit {
 
   onSearch(): void {
     this.jobs.set([]);
-    this.page = 1;
+    this.page = 0;
     this.hasMore = true;
     this.loadJobs();
   }
@@ -176,5 +177,10 @@ export class JobListComponent implements OnInit, AfterViewInit {
 
     // Open the job URL in a new tab
     window.open(job.url, '_blank');
+  }
+
+  // TrackBy function for performance optimization
+  trackByJobId(index: number, job: Job): string {
+    return job.id;
   }
 }
