@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { JobService } from '../../../core/services/job.service';
 import { Job } from '../../../core/models/job.model';
@@ -23,6 +23,7 @@ export class JobListComponent implements OnInit, AfterViewInit {
   private jobService = inject(JobService);
   private store = inject(Store);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   @ViewChild('sentinel') sentinel!: ElementRef;
 
@@ -175,8 +176,8 @@ export class JobListComponent implements OnInit, AfterViewInit {
       this.store.dispatch(ApplicationsActions.addApplication({ application }));
     }
 
-    // Open the job URL in a new tab
-    window.open(job.url, '_blank');
+    // Navigate to applications page
+    this.router.navigate(['/applications']);
   }
 
   // TrackBy function for performance optimization

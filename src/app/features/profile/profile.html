@@ -3,136 +3,107 @@
     <!-- Header -->
     <div class="profile-header">
       <button class="back-button" (click)="goToDashboard()" title="Retour au tableau de bord">
-        ← Retour
+        Retour
       </button>
       <h1>Mon Profil</h1>
     </div>
 
     <!-- Messages d'erreur et de succès -->
     @if (errorMessage()) {
-      <div class="alert alert-error" role="alert">
-        {{ errorMessage() }}
-      </div>
+    <div class="alert alert-error" role="alert">
+      {{ errorMessage() }}
+    </div>
     }
 
     @if (successMessage()) {
-      <div class="alert alert-success" role="alert">
-        {{ successMessage() }}
-      </div>
+    <div class="alert alert-success" role="alert">
+      {{ successMessage() }}
+    </div>
     }
 
     <!-- Formulaire de profil -->
     @if (currentUser(); as user) {
-      <form [formGroup]="profileForm" (ngSubmit)="saveChanges()" class="profile-form">
-        <!-- Informations utilisateur -->
-        <div class="user-info-display">
-          <div class="info-item">
-            <label>ID Utilisateur</label>
-            <p>{{ user.id }}</p>
-          </div>
+    <form [formGroup]="profileForm" (ngSubmit)="saveChanges()" class="profile-form">
+      <!-- Informations utilisateur -->
+      <div class="user-info-display">
+        <div class="info-item">
+          <label>ID Utilisateur</label>
+          <p>{{ user.id }}</p>
         </div>
+      </div>
 
-        <!-- Champs du formulaire -->
-        <div class="form-group">
-          <label for="prenom">Prénom</label>
-          <input
-            id="prenom"
-            type="text"
-            formControlName="prenom"
-            [attr.disabled]="!isEditing() ? true : null"
-            required
-          />
-          @if (profileForm.get('prenom')?.invalid && (profileForm.get('prenom')?.dirty || profileForm.get('prenom')?.touched)) {
-            <span class="error-message">
-              @if (profileForm.get('prenom')?.errors?.['required']) {
-                Le prénom est requis
-              }
-              @if (profileForm.get('prenom')?.errors?.['minlength']) {
-                Le prénom doit contenir au moins 2 caractères
-              }
-            </span>
+      <!-- Champs du formulaire -->
+      <div class="form-group">
+        <label for="prenom">Prénom</label>
+        <input id="prenom" type="text" formControlName="prenom" [attr.disabled]="!isEditing() ? true : null" required />
+        @if (profileForm.get('prenom')?.invalid && (profileForm.get('prenom')?.dirty ||
+        profileForm.get('prenom')?.touched)) {
+        <span class="error-message">
+          @if (profileForm.get('prenom')?.errors?.['required']) {
+          Le prénom est requis
           }
-        </div>
+          @if (profileForm.get('prenom')?.errors?.['minlength']) {
+          Le prénom doit contenir au moins 2 caractères
+          }
+        </span>
+        }
+      </div>
 
-        <div class="form-group">
-          <label for="nom">Nom</label>
-          <input
-            id="nom"
-            type="text"
-            formControlName="nom"
-            [attr.disabled]="!isEditing() ? true : null"
-            required
-          />
-          @if (profileForm.get('nom')?.invalid && (profileForm.get('nom')?.dirty || profileForm.get('nom')?.touched)) {
-            <span class="error-message">
-              @if (profileForm.get('nom')?.errors?.['required']) {
-                Le nom est requis
-              }
-              @if (profileForm.get('nom')?.errors?.['minlength']) {
-                Le nom doit contenir au moins 2 caractères
-              }
-            </span>
+      <div class="form-group">
+        <label for="nom">Nom</label>
+        <input id="nom" type="text" formControlName="nom" [attr.disabled]="!isEditing() ? true : null" required />
+        @if (profileForm.get('nom')?.invalid && (profileForm.get('nom')?.dirty || profileForm.get('nom')?.touched)) {
+        <span class="error-message">
+          @if (profileForm.get('nom')?.errors?.['required']) {
+          Le nom est requis
           }
-        </div>
+          @if (profileForm.get('nom')?.errors?.['minlength']) {
+          Le nom doit contenir au moins 2 caractères
+          }
+        </span>
+        }
+      </div>
 
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            [attr.disabled]="!isEditing() ? true : null"
-            required
-          />
-          @if (profileForm.get('email')?.invalid && (profileForm.get('email')?.dirty || profileForm.get('email')?.touched)) {
-            <span class="error-message">
-              @if (profileForm.get('email')?.errors?.['required']) {
-                L'email est requis
-              }
-              @if (profileForm.get('email')?.errors?.['email']) {
-                Veuillez entrer un email valide
-              }
-            </span>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" [attr.disabled]="!isEditing() ? true : null" required />
+        @if (profileForm.get('email')?.invalid && (profileForm.get('email')?.dirty ||
+        profileForm.get('email')?.touched)) {
+        <span class="error-message">
+          @if (profileForm.get('email')?.errors?.['required']) {
+          L'email est requis
           }
-        </div>
+          @if (profileForm.get('email')?.errors?.['email']) {
+          Veuillez entrer un email valide
+          }
+        </span>
+        }
+      </div>
 
-        <!-- Boutons d'action -->
-        <div class="action-buttons">
-          @if (!isEditing()) {
-            <button
-              type="button"
-              class="btn btn-primary"
-              (click)="enableEditing()"
-            >
-              Modifier le profil
-            </button>
-          } @else {
-            <div class="edit-buttons">
-              <button
-                type="submit"
-                class="btn btn-success"
-                [disabled]="profileForm.invalid || isLoading()"
-              >
-                @if (isLoading()) {
-                  En cours...
-                } @else {
-                  Sauvegarder
-                }
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="cancelEditing()"
-                [disabled]="isLoading()"
-              >
-                Annuler
-              </button>
-            </div>
-          }
+      <!-- Boutons d'action -->
+      <div class="action-buttons">
+        @if (!isEditing()) {
+        <button type="button" class="btn btn-primary" (click)="enableEditing()">
+          Modifier le profil
+        </button>
+        } @else {
+        <div class="edit-buttons">
+          <button type="submit" class="btn btn-success" [disabled]="profileForm.invalid || isLoading()">
+            @if (isLoading()) {
+            En cours...
+            } @else {
+            Sauvegarder
+            }
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelEditing()" [disabled]="isLoading()">
+            Annuler
+          </button>
         </div>
-      </form>
+        }
+      </div>
+    </form>
     } @else {
-      <p class="no-user">Aucun utilisateur connecté</p>
+    <p class="no-user">Aucun utilisateur connecté</p>
     }
   </div>
 </div>

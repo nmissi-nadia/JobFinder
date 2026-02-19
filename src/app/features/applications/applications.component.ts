@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { StatusLabelPipe } from '../../shared/pipes/status-label.pipe';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { Store } from '@ngrx/store';
@@ -16,7 +17,7 @@ import {
 
 @Component({
     selector: 'app-applications',
-    imports: [CommonModule, FormsModule, StatusLabelPipe, TimeAgoPipe],
+    imports: [CommonModule, FormsModule, StatusLabelPipe, TimeAgoPipe, RouterLink],
     templateUrl: './applications.component.html',
     styleUrl: './applications.component.css',
 })
@@ -116,4 +117,10 @@ export class ApplicationsComponent implements OnInit {
         }
         return this.applications().filter((app) => app.status === status).length;
     }
+
+    // TrackBy function for performance optimization
+    trackByApplicationId(index: number, application: Application): string {
+        return application.id || index.toString();
+    }
 }
+

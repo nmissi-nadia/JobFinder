@@ -1,5 +1,5 @@
 <div class="job-detail-container">
-  <button routerLink="/jobs" class="back-button">← Retour aux offres</button>
+  <button routerLink="/jobs" class="back-button">Retour aux offres</button>
 
   @if (error()) {
   <div class="error-message">{{ error() }}</div>
@@ -12,17 +12,17 @@
     <div class="job-header">
       <div class="badges">
         @if (isFavorite()) {
-        <span class="badge badge-favorite">⭐ Dans vos favoris</span>
+        <span class="badge badge-favorite">Dans vos favoris</span>
         }
         @if (isTracked()) {
-        <span class="badge badge-tracked">📋 Candidature suivie</span>
+        <span class="badge badge-tracked">Candidature suivie</span>
         }
       </div>
       <h1>{{ currentJob.title }}</h1>
       <p class="company">{{ currentJob.company }}</p>
-      <p class="location">📍 {{ currentJob.location }}</p>
+      <p class="location">{{ currentJob.location }}</p>
       @if (currentJob.salary) {
-      <p class="salary">💰 {{ currentJob.salary }}</p>
+      <p class="salary">{{ currentJob.salary }}</p>
       }
       <p class="date-posted">Publié le {{ currentJob.datePosted | date:'longDate' }}</p>
     </div>

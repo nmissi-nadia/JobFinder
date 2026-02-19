@@ -37,7 +37,7 @@
                 <div>
                     <h2>{{ application.title }}</h2>
                     <p class="company">{{ application.company }}</p>
-                    <p class="location">📍 {{ application.location }}</p>
+                    <p class="location">{{ application.location }}</p>
                 </div>
                 <div class="status-badge" [ngClass]="getStatusClass(application.status)">
                     {{ application.status | statusLabel }}
@@ -55,15 +55,15 @@
                     <div class="status-buttons">
                         <button (click)="updateStatus(application, 'en_attente')"
                             [disabled]="application.status === 'en_attente'" class="btn-status btn-pending">
-                            ⏳ En attente
+                            En attente
                         </button>
                         <button (click)="updateStatus(application, 'accepte')"
                             [disabled]="application.status === 'accepte'" class="btn-status btn-accepted">
-                            ✅ Accepté
+                            Accepté
                         </button>
                         <button (click)="updateStatus(application, 'refuse')"
                             [disabled]="application.status === 'refuse'" class="btn-status btn-refused">
-                            ❌ Refusé
+                            Refusé
                         </button>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                         <textarea [(ngModel)]="notesInput()[application.id!]" placeholder="Ajoutez vos notes ici..."
                             rows="3"></textarea>
                         <div class="notes-actions">
-                            <button (click)="saveNotes(application)" class="btn-save">💾 Sauvegarder</button>
+                            <button (click)="saveNotes(application)" class="btn-save">Sauvegarder</button>
                             <button (click)="cancelEditingNotes(application.id!)" class="btn-cancel">Annuler</button>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                         <p class="notes-empty">Aucune note pour le moment.</p>
                         }
                         <button (click)="startEditingNotes(application.id!, application.notes)" class="btn-edit-notes">
-                            ✏️ {{ application.notes ? 'Modifier' : 'Ajouter' }} les notes
+                            {{ application.notes ? 'Modifier' : 'Ajouter' }} les notes
                         </button>
                     </div>
                     }
@@ -96,11 +96,11 @@
             </div>
 
             <div class="application-footer">
-                <a [href]="application.url" target="_blank" class="btn-view-offer">
-                    🔗 Voir l'offre
+                <a [routerLink]="['/jobs', application.jobId]" class="btn-view-offer">
+                    Voir l'offre
                 </a>
                 <button (click)="deleteApplication(application.id!)" class="btn-delete">
-                    🗑️ Supprimer
+                    Supprimer
                 </button>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { JobService } from '../../../core/services/job.service';
@@ -24,6 +24,7 @@ export class JobDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private store = inject(Store);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   protected job = signal<Job | null>(null);
   protected isLoading = signal(false);
@@ -151,7 +152,7 @@ export class JobDetailComponent implements OnInit {
       this.store.dispatch(ApplicationsActions.addApplication({ application }));
     }
 
-    // Open the job URL in a new tab
-    window.open(currentJob.url, '_blank');
+    // Navigate to applications page
+    this.router.navigate(['/applications']);
   }
 }

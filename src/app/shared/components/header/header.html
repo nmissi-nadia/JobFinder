@@ -21,6 +21,8 @@
       @if (isLoggedIn()) {
       <a routerLink="/favorites" routerLinkActive="text-red-600"
         class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600 transition-colors">Favoris</a>
+      <a routerLink="/applications" routerLinkActive="text-red-600"
+        class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600 transition-colors">Candidatures</a>
       }
     </nav>
 
@@ -72,6 +74,8 @@
       @if (isLoggedIn()) {
       <a routerLink="/favorites" (click)="closeMenu()" routerLinkActive="bg-gray-50 text-red-600"
         class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50 hover:text-red-600">Favoris</a>
+      <a routerLink="/applications" (click)="closeMenu()" routerLinkActive="bg-gray-50 text-red-600"
+        class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50 hover:text-red-600">Candidatures</a>
       <a routerLink="/profile" (click)="closeMenu()" routerLinkActive="bg-gray-50 text-red-600"
         class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50 hover:text-red-600">Profil</a>
       <button (click)="logout()"
